@@ -88,17 +88,21 @@ class ratio_atmosphere(object):
 class initial_sizing(object):
     def __init__(self, AR, rho, Vmax, Vmin, maxWS, nMAX, CDmin, CDTO,\
                  maxROC, g, mu, V_liftoff, CLTO, Sg, V_design, V_climb):
+        # ====================================================================
         self.AR, self.rho, self.Vmax, self.Vmin, self.maxWS, self.nMAX,\
-            self.CDmin, self.CDTO, self.maxROC, self.g, self.mu,\
-                self.V_liftoff, self.CLTO, self.Sg, self.V_design,\
-                    self.V_climb = AR, rho, Vmax, Vmin, maxWS, nMAX, CDmin,\
-                        CDTO, maxROC, g, mu, V_liftoff, CLTO, Sg, V_design, V_climb
+        self.CDmin, self.CDTO, self.maxROC, self.g, self.mu, self.V_liftoff,\
+        self.CLTO, self.Sg, self.V_design, self.V_climb = AR, rho, Vmax, Vmin,\
+        maxWS, nMAX, CDmin, CDTO, maxROC, g, mu, V_liftoff, CLTO, Sg, V_design,\
+        V_climb
+        # ====================================================================    
         self.V       = np.linspace(Vmin, Vmax, 1000)
         self.e       = self.efficiency_factor(AR)
+        self.MaxROC  = 1.66667 # ROC in [ft/s]
         self.q       = self.dynamic_press(rho, self.V)
         self.qLO     = self.dynamic_press(rho, V_liftoff/np.sqrt(2.0))
         self.qd      = self.dynamic_press(rho, V_design)
         self.qclimb  = self.dynamic_press(rho, V_climb)
+        self.qcruise = self.dynamic_press(rho, self.V[-1])
         self.ws      = self.wing_loading(maxWS)
         self.k       = self.lift_induced_drag_constant(AR, self.e)
         self.TWturn  = self.constant_turn(self.qd, CDmin, self.ws,\
@@ -108,6 +112,10 @@ class initial_sizing(object):
                                                        maxROC, V_climb)
         self.TWTO    = self.take_off_TW_ratio(self.qLO, CDTO, CLTO, g, Sg, self.ws,\
                                               mu, V_liftoff)
+        self.TWCS    = self.cruise_speed_TW_ratio(self.qcruise, CDmin, self.k,\
+                                                  self.ws)
+        self.TWSC    = self.service_ceiling_TW_ratio(self.MaxROC, CDmin,\
+                                                     self.k, self.ws, rho)
     # ========================================================================        
     def efficiency_factor(self, AR):
         """
@@ -332,7 +340,74 @@ class initial_sizing(object):
             kk[i] = xx + yy[i] + mu*zz[i]
 
         return kk 
-    # ======================================================================== 
+    # ========================================================================  
+    def cruise_speed_TW_ratio(self, q, CDmin, k, ws):
+        """
+        
+
+        Parameters
+        ----------
+        q : TYPE
+            DESCRIPTION.
+        CDmin : TYPE
+            DESCRIPTION.
+        k : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        kk : TYPE
+            DESCRIPTION.
+
+        """
+        xx = np.zeros(len(ws))
+        yy = np.zeros(len(ws))
+        zz = np.zeros(len(ws))
+        kk = np.zeros(len(ws))
+        for i in range(len(ws)):
+            xx[i] = q*CDmin*(1/ws[i])
+            yy[i] = k/q
+            zz[i] = yy[i]*ws[i]
+            kk[i] = xx[i] + zz[i]
+        
+        return kk 
+    # ========================================================================
+    # ========================================================================  
+    def service_ceiling_TW_ratio(self, MaxROC, CDmin, k, ws, rho):
+        """
+        
+
+        Parameters
+        ----------
+        MaxROC : TYPE
+            DESCRIPTION.
+        CDmin : TYPE
+            DESCRIPTION.
+        k : TYPE
+            DESCRIPTION.
+        ws : TYPE
+            DESCRIPTION.
+        rho : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        kk : TYPE
+            DESCRIPTION.
+
+        """
+        xx = np.zeros(len(ws))
+        yy = np.zeros(len(ws))
+        zz = np.zeros(len(ws))
+        kk = np.zeros(len(ws))
+        for i in range(len(ws)):
+            xx[i] = np.sqrt(k/(3*CDmin))
+            yy[i] = np.sqrt((2/rho)*(ws[i])*(xx[i]))
+            zz[i] = MaxROC/yy[i]
+            kk[i] = zz[i] + 4*zz[i]
+        
+        return kk 
+    # ========================================================================
 # ============================================================================
 class mattingly_turboprop(object):
     """

@@ -63,10 +63,12 @@ T0    = 59        # [F°]
 p0    = 2116      # [lb/ft^2]
 rho0  = 0.002378  # [slug/ft^3] = [lb * ft^-1 * s^2]
 h     = 8000.0    # [ft]
+SC    = 25000.0   # [ft]
 # ============================================================================
 # ATMOSPHERE CALCULATIONS
 # ============================================================================
-my_atmo = isa_atmosphere(T0, p0, rho0, h, gamma, R)
+my_atmo   = isa_atmosphere(T0, p0, rho0, h, gamma, R)
+my_atmoSC = isa_atmosphere(T0, p0, rho0, SC, gamma, R)
 # ============================================================================
 # AIRCRAFT DATA 
 # ============================================================================
@@ -78,10 +80,11 @@ mu        = 0.04
 Sg        = 900.0                       # Take off length [ft]
 rho1      = my_atmo.rho[0]
 rho2      = my_atmo.rho[-1]
+rhoSC     = my_atmoSC.rho[-1]
 g         = 32.17404856                 # [slug * ft * s^-2]
 V_liftoff = knots2feetperseconds(65.0)
 Vmin      = knots2feetperseconds(61.0)  # [ft/s]
-Vmax      = knots2feetperseconds(150.0) # [ft/s]
+Vmax      = knots2feetperseconds(250.0) # [ft/s]
 Vturn     = knots2feetperseconds(80.0)  # [ft/s]
 V_climb   = knots2feetperseconds(135.0)
 V_design  = knots2feetperseconds(160.0)
@@ -93,6 +96,8 @@ my_aircraft1 = initial_sizing(AR, rho1, Vmax, Vmin, maxWS, nMAX, CDmin, CDTO,\
                               maxROC, g, mu, V_liftoff, CLTO, Sg, V_design, V_climb)
 my_aircraft2 = initial_sizing(AR, rho2, Vmax, Vmin, maxWS, nMAX, CDmin, CDTO,\
                               maxROC, g, mu, V_liftoff, CLTO, Sg, V_design, V_climb)
+my_aircraft3 = initial_sizing(AR, rhoSC, Vmax, Vmin, maxWS, nMAX, CDmin, CDTO,\
+                              maxROC, g, mu, V_liftoff, CLTO, Sg, V_design, V_climb)    
 # =================================================================== 
 fig1  = plt.figure()
 plt.plot(my_aircraft1.ws, my_aircraft1.TWturn,\
@@ -104,7 +109,11 @@ plt.plot(my_aircraft1.ws, my_aircraft1.TWclimb,\
 plt.plot(my_aircraft2.ws, my_aircraft2.TWclimb,\
          label=r"$\frac{T}{W}$ - Thrust to weight ratio for selected max climb - $h_{\tiny \textup{max}}$")
 plt.plot(my_aircraft1.ws, my_aircraft1.TWTO,\
-         label=r"$\frac{T}{W} \,\, [lb/lb]$ - Thrust to weight ratio for selected Takeoff")   
+         label=r"$\frac{T}{W} \,\, [lb/lb]$ - Thrust to weight ratio for selected Takeoff")  
+plt.plot(my_aircraft2.ws, my_aircraft2.TWCS,\
+         label=r"$\frac{T}{W} \,\, [lb/lb]$ - Thrust to weight ratio for selected Cruise speed")    
+plt.plot(my_aircraft3.ws, my_aircraft3.TWCS,\
+         label=r"$\frac{T}{W} \,\, [lb/lb]$ - Thrust to weight ratio for selected Service Ceiling")    
 plt.xlabel(r'Wing loading - $\frac{W}{S} \,\, [lb/ft^2]$')  # x-label to the axes.
 plt.ylabel(r'Thrust-to-weight ratio - $\frac{T}{W}$')     # y-label to the axes.
 plt.title(r'Constraint diagram')                          # Title to the axes.
