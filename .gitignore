@@ -6,6 +6,13 @@ __pycache__/
 # C extensions
 *.so
 
+# File a caso 
+../.README.md.swp
+.initial_sizing.py.swo
+.initial_sizing.py.swp
+../Raymer_sizing/.test.py.swp
+
+
 # Distribution / packaging
 .Python
 build/
