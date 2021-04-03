@@ -41,7 +41,8 @@ def fpm2fps(x):
     return x/60.0
 # ============================================================================
 # ============================================================================
-from initial_sizing import isa_atmosphere, initial_sizing
+from initial_sizing import isa_atmosphere, initial_sizing, mattingly_turboprop,\
+    ratio_atmosphere
 import matplotlib.pyplot as plt
 from matplotlib import rc
 import numpy as np
@@ -51,17 +52,21 @@ rc('text', usetex=True)
 # ============================================================================
 from matplotlib.backends.backend_pdf import PdfPages
 pp1 = PdfPages('figura1-1.pdf')
+pp2 = PdfPages('figura1-2.pdf')
+pp3 = PdfPages('figura1-3.pdf')
 # ============================================================================
 # DATA ATMOSPHERE
 # ============================================================================
-T0   = 59        # [F°]
-p0   = 2116      # [lb/ft^2]
-rho0 = 0.002378  # [slug/ft^3] = [lb * ft^-1 * s^2]
-h    = 8000.0    # [ft]
+gamma = 1.4
+R     = 1718.0    # [(ft * lb )/(slug * F°)]
+T0    = 59        # [F°]
+p0    = 2116      # [lb/ft^2]
+rho0  = 0.002378  # [slug/ft^3] = [lb * ft^-1 * s^2]
+h     = 8000.0    # [ft]
 # ============================================================================
 # ATMOSPHERE CALCULATIONS
 # ============================================================================
-my_atmo = isa_atmosphere(T0, p0, rho0, h)
+my_atmo = isa_atmosphere(T0, p0, rho0, h, gamma, R)
 # ============================================================================
 # AIRCRAFT DATA 
 # ============================================================================
@@ -110,4 +115,72 @@ plt.grid(True, linestyle='-.')
 plt.show()  
 pp1.savefig(fig1)
 pp1.close()
+# =================================================================== 
+# ============================================================================
+# DATA ATMOSPHERE 1
+# ============================================================================
+h1    = [0.0, 5000.0, 10000.0, 15000.0, 20000.0, 25000.0]    # [ft]
+# ============================================================================
+M_max      = 0.6
+M_min      = 0.0
+M          = np.linspace(M_min, M_max, 1000)
+gamma      = 1.4
+eta_p      = 0.8
+BHP        = 2750.0
+my_atmo1   = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+my_ratio1  = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+my_engine1 = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+V1         = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0] 
+F_SL       = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+thetac     = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+for k in range(len(h1)):
+    my_atmo1[k]   = isa_atmosphere(T0, p0, rho0, h1[k], gamma, R)
+    V1[k]         = my_atmo1[k].a[-1]*M_max
+    F_SL[k]       = (eta_p*550.0*BHP)/V1[k]
+    my_ratio1[k]  = ratio_atmosphere(my_atmo1[k].T[-1], my_atmo1[k].p[-1],\
+                                     M, gamma)
+    thetac[k]     = my_ratio1[k].theta[-1]
+    my_engine1[k] = mattingly_turboprop(F_SL[k], my_ratio1[k].delta, my_ratio1[k].theta,\
+                                thetac[k], M)
+# =================================================================== 
+Thrust_ratio = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+for l in range(len(h1)):
+    Thrust_ratio[l] = my_engine1[k].F/F_SL[l] 
+    
+fig2  = plt.figure()
+plt.plot(M, Thrust_ratio[0], label=r"$h = 0\,ft$")
+plt.plot(M, Thrust_ratio[1], label=r"$h = 5000\,ft$")
+plt.plot(M, Thrust_ratio[2], label=r"$h = 10000\,ft$")
+plt.plot(M, Thrust_ratio[3], label=r"$h = 15000\,ft$")
+plt.plot(M, Thrust_ratio[4], label=r"$h = 20000\,ft$")
+plt.plot(M, Thrust_ratio[5], label=r"$h = 25000\,ft$")
+plt.xlabel(r'$M$ - Mach number')                         # x-label to the axes.
+plt.ylabel(r"$F/F_{\textup{SL}}$ - Engine Thrust Ratio") # y-label to the axes.
+plt.title(r'Turboprop Engine thrust ratio')              # Title to the axes.
+plt.legend(loc="upper right", prop={"size" : 6})
+#plt.ylim(0, 0.4)
+plt.xlim(0, 0.6)
+plt.grid(True, linestyle='-.')
+plt.show()  
+pp2.savefig(fig2)
+pp2.close()
+# ===================================================================     
+# ===================================================================     
+fig3  = plt.figure()
+plt.plot(M, (Thrust_ratio[0]*V1[0])/(eta_p*550.0), label=r"$h = 0\,ft$")
+plt.plot(M, (Thrust_ratio[1]*V1[1])/(eta_p*550.0), label=r"$h = 5000\,ft$")
+plt.plot(M, (Thrust_ratio[2]*V1[2])/(eta_p*550.0), label=r"$h = 10000\,ft$")
+plt.plot(M, (Thrust_ratio[3]*V1[3])/(eta_p*550.0), label=r"$h = 15000\,ft$")
+plt.plot(M, (Thrust_ratio[4]*V1[4])/(eta_p*550.0), label=r"$h = 20000\,ft$")
+plt.plot(M, (Thrust_ratio[5]*V1[5])/(eta_p*550.0), label=r"$h = 25000\,ft$")
+plt.xlabel(r'$M$ - Mach number')                         # x-label to the axes.
+plt.ylabel(r"$P/P_{\textup{SL}}$ - Engine Power ratio")  # y-label to the axes.
+plt.title(r'Turboprop Engine power ratio')               # Title to the axes.
+plt.legend(loc="upper right", prop={"size" : 6})
+#plt.ylim(0, 0.4)
+plt.xlim(0, 0.6)
+plt.grid(True, linestyle='-.')
+plt.show()  
+pp3.savefig(fig3)
+pp3.close()
 # =================================================================== 

@@ -2,7 +2,7 @@
 """
 Created on Sun Dec 27 11:37:52 2020
 
-Initial aircraft sizing
+A class for initial Aircraft sizing
 
 @author: claum
 """
@@ -16,12 +16,14 @@ class isa_atmosphere(object):
     """
     A class that calculates standard atmosphere in Engineering units.
     """
-    def __init__(self, T0, p0, rho0, h):
-        self.T0, self.p0, self.rho0, self.h = T0, p0, rho0, h
+    def __init__(self, T0, p0, rho0, h, gamma, R):
+        self.T0, self.p0, self.rho0, self.h, self.gamma, self.R = T0, p0,\
+            rho0, h, gamma, R
         self.x   = np.linspace(0, self.h, 1000)
         self.T   = self.temperature(self.T0, self.x)
         self.p   = self.pressure(self.p0, self.T, self.x)
         self.rho = self.density(self.p, self.T)
+        self.a   = self.speed_of_sound(gamma, self.T, R)
     # ========================================================================        
     def temperature(self, T0, x):
         return self.T0 - 0.00356*(self.x)
@@ -31,7 +33,13 @@ class isa_atmosphere(object):
     # ========================================================================    
     def density(self, p, T): 
         return self.p/(1718.0*(self.T + 459.7))
-    # ======================================================================== 
+    # ========================================================================
+    def speed_of_sound(self, gamma, T, R): 
+        aa = np.zeros(len(T))
+        for i in range(len(T)):
+            aa[i] = np.sqrt(gamma*(T[i] + 459.7)*R)
+        return aa
+    # ========================================================================    
 # ============================================================================
 # STANDARD ATMOSPHERE
 # ============================================================================
@@ -44,25 +52,33 @@ class ratio_atmosphere(object):
     """
     def __init__(self, T, p, M, gamma):
         self.T, self.p, self.M, self.gamma = T, p, M, gamma
-        self.x     = self.partial_product(gamma, M)
+        self.x         = np.zeros(len(M))
+        for i in range(len(M)):
+            self.x[i]     = self.partial_p(gamma, M[i]) # 1 + 0.5*(gamma - 1)*M[i]**2 # 
         self.T0    = 59
-        self.p0    = 17.554
-        self.theta = self.theta_ratio(self.T, self.T0, self.x)
-        self.delta = self.delta_ratio(p, self.p0, self.x, gamma)
-        # ====================================================================
-        def theta_ratio(self, T, T0, x):
-            d = T/T0
-            return x*d
-        # ====================================================================
-        def partial_product(self, gamma, M):
-            return 1 + 0.5*(gamma - 1)*M**2
-        # ====================================================================
-        def delta_ratio(self, p, p0, x, gamma):
-            d = p/p0
-            y = gamma/(gamma-1)
-            z = x**y
-            return z*d
-        # ====================================================================        
+        self.p0    = 2116
+        self.theta = np.zeros(len(M))
+        self.delta = np.zeros(len(M))
+        for j in range(len(M)):
+            self.theta[j] = abs(self.theta_ratio(T, self.T0, self.x[j]))
+            self.delta[j] = abs(self.delta_ratio(p, self.p0, self.x[j], gamma))  
+    # ====================================================================    
+    def theta_ratio(self, T, T0, x):
+        d = T/T0
+        return x*d
+    # ====================================================================
+    def delta_ratio(self, p, p0, x, gamma):
+        d = p/p0
+        y = gamma/(gamma-1)
+        z = x**y
+        return z*d
+    # ====================================================================
+    def partial_p(self, gamma, M):
+        xx = M**2
+        yy = gamma - 1
+        zz = 1 + 0.5*yy*xx
+        return zz
+    # ====================================================================            
 # ============================================================================
 # ATMOSPHERE RATIO
 # ============================================================================
@@ -349,36 +365,36 @@ class mattingly_turboprop(object):
         self.T0 = 59       
         self.TR = self.throttle_ratio(thetac, self.T0)
         TR      = self.TR
-        self.F  =  0.0
-        if (M <= 0.1):
-            self.F = self.func1(F_SL, delta0)
-        elif (M > 0.1 and theta0 <= TR):
-            self.F = self.func2(F_SL, delta0, M)
-        elif (M > 0.1 and theta0 > TR):
-            self.F = self.func3(F_SL, delta0, theta0, M, TR)
+        self.F  = np.zeros(len(M))
+        for i in range(len(M)):
+            if (M[i] <= 0.1):
+                self.F[i] = self.func1(F_SL, delta0[i])
+            elif (M[i] > 0.1 and theta0[i] <= TR):
+                self.F[i] = self.func2(F_SL, delta0[i], M[i])
+            elif (M[i] > 0.1 and theta0[i] > TR):
+                self.F[i] = self.func3(F_SL, delta0[i], theta0[i], M[i], TR)
         # ====================================================================    
-        def throttle_ratio(self, thetac, T0):
-            T = thetac*T0
-            TR = T/T0
-            return TR
-        # ====================================================================            
-        # ====================================================================    
-        def func1(self, F_SL, delta0):
-            return F_SL*delta0
-        # ====================================================================    
-        def func2(self, F_SL, delta0, M):
-            x = (M - 0.1)**0.25
-            y = 1 - 0.96*x
-            z = delta0*y
-            return F_SL*z
-        # ====================================================================    
-        def func3(self, F_SL, delta0, theta0, M, TR):
-            x = (M - 0.1)**0.25
-            y = 3*(theta0 - TR)
-            z = 8.13*(M - 0.1)
-            t = 1 - 0.96*x - (y/z)
-            return F_SL*delta0*t
-        # ====================================================================        
+    def throttle_ratio(self, thetac, T0):
+        T = thetac*T0
+        TR = T/T0
+        return TR          
+    # ========================================================================    
+    def func1(self, F_SL, delta0):
+        return F_SL*delta0
+    # ========================================================================    
+    def func2(self, F_SL, delta0, M):
+        x = (M - 0.1)**0.25
+        y = 1 - 0.96*x
+        z = delta0*y
+        return F_SL*z
+    # ========================================================================    
+    def func3(self, F_SL, delta0, theta0, M, TR):
+        x = (M - 0.1)**0.25
+        y = 3*(theta0 - TR)
+        z = 8.13*(M - 0.1)
+        t = 1 - 0.96*x - (y/z)
+        return F_SL*delta0*t
+    # ========================================================================        
 # ============================================================================
 # ============================================================================
 # ============================================================================
