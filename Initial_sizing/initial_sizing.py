@@ -277,6 +277,86 @@ class ratio_atmosphere(object):
 # ATMOSPHERE RATIO
 # ============================================================================
 # ============================================================================
+# MAXIMUM LIFT COEFFICIENT
+# ============================================================================
+class maximum_lift_coefficient(object):
+    """
+    Class to evaluate aircraft maximum lift coefficient as a function of 
+    wing loading W/S (expressed in engineering units [lb/sqft])
+    """
+    def __init__(self, rho, V_STALL, maxWS):
+        """
+        Inizialization of the maximum_lift_coefficient class.
+
+        Parameters
+        ----------
+        rho : FLOAT
+            Density in [slug/cubic ft].
+        V_STALL : FLOAT
+            Array or list which contains selected stall speed values.
+        maxWS : FLOAT
+            Maximum wing loading W/S to build an array.
+
+        Returns
+        -------
+        Maximum lift coefficient CL_MAX.
+
+        """
+        # ======================================================
+        self.rho, self.V_STALL, self.maxWS = rho, V_STALL, maxWS
+        # ======================================================
+        self.V_SELECTED   = [0.0]*len(V_STALL)
+        for i in range(len(V_STALL)):
+            self.V_SELECTED[i] = V_STALL[i]
+        self.q_STALL      = [0.0]*len(V_STALL)    
+        for j in range(len(V_STALL)):
+            self.q_STALL[j] = self.dynamic_press(rho, V_STALL[j])
+        self.ws      = self.wing_loading(maxWS)
+        self.CL_MAX  = [0.0]*len(V_STALL)
+        for k in range(len(V_STALL)):
+            self.CL_MAX[k] = (1/self.q_STALL[k])*self.ws
+        # ======================================================
+    def dynamic_press(self, rho, V):
+        """
+        Function that calculates a vector containing dynamic pressure values
+
+        Parameters
+        ----------
+        rho : FLOAT
+            Density at prescribed flight conditions.
+        V : FLOAT
+            Speed at prescribed flight conditions.
+
+        Returns
+        -------
+        q : FLOAT
+            Dynamic pressure (array or scalar) [lb/ft^2].
+
+        """
+        return 0.5*rho*V**2
+    # ========================================================================
+    # ======================================================================== 
+    def wing_loading(self, maxWS):
+        """
+        Function that calculates wing loading values for plot
+
+        Parameters
+        ----------
+        maxWS : FLOAT
+            Max wing loading W/S [lb/ft^2].
+
+        Returns
+        -------
+        ws : FLOAT
+            A vector with wing loading values from 0 to MAX(W/S).
+
+        """
+        return np.linspace(5, maxWS, 1000)
+    # ========================================================================    
+# ============================================================================
+# MAXIMUM LIFT COEFFICIENT
+# ============================================================================
+# ============================================================================
 # INITIAL SIZING
 # ============================================================================
 class initial_sizing(object):
