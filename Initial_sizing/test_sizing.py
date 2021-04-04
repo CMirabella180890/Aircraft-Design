@@ -180,7 +180,10 @@ plt.title(r'Constraint diagram')                          # Title to the axes.
 plt.xlim(0, 60)
 # plt.grid(True, linestyle='-.')
 plt.show()
+pp1.savefig(fig)
+pp1.close()
 # ============================================================================
+# OLD VERSION CONSTRAINTS DIAGRAM 
 # fig1  = plt.figure()
 # plt.plot(my_aircraft1.ws, my_aircraft1.TWturn,\
 #          label=r"$\frac{T}{W}$ - Thrust to weight ratio for constant g turn - SL",
