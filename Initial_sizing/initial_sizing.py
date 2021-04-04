@@ -789,7 +789,7 @@ class mattingly_turboprop(object):
     # ========================================================================    
     def func3(self, F_SL, delta0, theta0, M, TR):
         """
-        
+        Thrust selection 2.        
 
         Parameters
         ----------

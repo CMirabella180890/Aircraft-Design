@@ -98,22 +98,52 @@ my_aircraft2 = initial_sizing(AR, rho2, Vmax, Vmin, maxWS, nMAX, CDmin, CDTO,\
                               maxROC, g, mu, V_liftoff, CLTO, Sg, V_design, V_climb)
 my_aircraft3 = initial_sizing(AR, rhoSC, Vmax, Vmin, maxWS, nMAX, CDmin, CDTO,\
                               maxROC, g, mu, V_liftoff, CLTO, Sg, V_design, V_climb)    
-# =================================================================== 
+# ============================================================================ 
+linestyle_str = [
+     ('solid', 'solid'),      # Same as (0, ()) or '-'
+     ('dotted', 'dotted'),    # Same as (0, (1, 1)) or '.'
+     ('dashed', 'dashed'),    # Same as '--'
+     ('dashdot', 'dashdot')]  # Same as '-.'
+# ============================================================================
+linestyle_tuple = [
+     ('loosely dotted',        (0, (1, 10))),
+     ('dotted',                (0, (1, 1))),
+     ('densely dotted',        (0, (1, 1))),
+
+     ('loosely dashed',        (0, (5, 10))),
+     ('dashed',                (0, (5, 5))),
+     ('densely dashed',        (0, (5, 1))),
+
+     ('loosely dashdotted',    (0, (3, 10, 1, 10))),
+     ('dashdotted',            (0, (3, 5, 1, 5))),
+     ('densely dashdotted',    (0, (3, 1, 1, 1))),
+
+     ('dashdotdotted',         (0, (3, 5, 1, 5, 1, 5))),
+     ('loosely dashdotdotted', (0, (3, 10, 1, 10, 1, 10))),
+     ('densely dashdotdotted', (0, (3, 1, 1, 1, 1, 1)))]
+# ============================================================================
 fig1  = plt.figure()
 plt.plot(my_aircraft1.ws, my_aircraft1.TWturn,\
-         label=r"$\frac{T}{W}$ - Thrust to weight ratio for constant g turn - SL")
+         label=r"$\frac{T}{W}$ - Thrust to weight ratio for constant g turn - SL",
+         linestyle="solid")
 plt.plot(my_aircraft2.ws, my_aircraft2.TWturn,\
-         label=r"$\frac{T}{W}$ - Thrust to weight ratio for constant g turn - $h_{\tiny \textup{max}}$")
+         label=r"$\frac{T}{W}$ - Thrust to weight ratio for constant g turn - $h_{\tiny \textup{max}}$",
+         linestyle="solid")
 plt.plot(my_aircraft1.ws, my_aircraft1.TWclimb,\
-         label=r"$\frac{T}{W}$ - Thrust to weight ratio for selected max climb - SL")
+         label=r"$\frac{T}{W}$ - Thrust to weight ratio for selected max climb - SL",
+         linestyle="dashed")
 plt.plot(my_aircraft2.ws, my_aircraft2.TWclimb,\
-         label=r"$\frac{T}{W}$ - Thrust to weight ratio for selected max climb - $h_{\tiny \textup{max}}$")
+         label=r"$\frac{T}{W}$ - Thrust to weight ratio for selected max climb - $h_{\tiny \textup{max}}$",
+         linestyle="dashed")
 plt.plot(my_aircraft1.ws, my_aircraft1.TWTO,\
-         label=r"$\frac{T}{W} \,\, [lb/lb]$ - Thrust to weight ratio for selected Takeoff")  
+         label=r"$\frac{T}{W} \,\, [lb/lb]$ - Thrust to weight ratio for selected Takeoff",
+         linestyle="solid")  
 plt.plot(my_aircraft2.ws, my_aircraft2.TWCS,\
-         label=r"$\frac{T}{W} \,\, [lb/lb]$ - Thrust to weight ratio for selected Cruise speed")    
+         label=r"$\frac{T}{W} \,\, [lb/lb]$ - Thrust to weight ratio for selected Cruise speed",
+         linestyle="dashdot")    
 plt.plot(my_aircraft3.ws, my_aircraft3.TWCS,\
-         label=r"$\frac{T}{W} \,\, [lb/lb]$ - Thrust to weight ratio for selected Service Ceiling")    
+         label=r"$\frac{T}{W} \,\, [lb/lb]$ - Thrust to weight ratio for selected Service Ceiling",
+         linestyle="dotted")    
 plt.xlabel(r'Wing loading - $\frac{W}{S} \,\, [lb/ft^2]$')  # x-label to the axes.
 plt.ylabel(r'Thrust-to-weight ratio - $\frac{T}{W}$')     # y-label to the axes.
 plt.title(r'Constraint diagram')                          # Title to the axes.
@@ -172,12 +202,12 @@ for l in range(len(h1)):
     Thrust_ratio[l] = my_engine1[l].F/F_SL[l] 
 # ===================================================================     
 fig2  = plt.figure()
-plt.plot(M, Thrust_ratio[0], label=r"$h = 0\,ft$")
-plt.plot(M, Thrust_ratio[1], label=r"$h = 5000\,ft$")
-plt.plot(M, Thrust_ratio[2], label=r"$h = 10000\,ft$")
-plt.plot(M, Thrust_ratio[3], label=r"$h = 15000\,ft$")
-plt.plot(M, Thrust_ratio[4], label=r"$h = 20000\,ft$")
-plt.plot(M, Thrust_ratio[5], label=r"$h = 25000\,ft$")
+plt.plot(M, Thrust_ratio[0], label=r"$h = 0\,ft$",     linestyle="solid")
+plt.plot(M, Thrust_ratio[1], label=r"$h = 5000\,ft$",  linestyle="dashed")
+plt.plot(M, Thrust_ratio[2], label=r"$h = 10000\,ft$", linestyle="dotted")
+plt.plot(M, Thrust_ratio[3], label=r"$h = 15000\,ft$", linestyle="dashdot")
+plt.plot(M, Thrust_ratio[4], label=r"$h = 20000\,ft$", linestyle="solid")
+plt.plot(M, Thrust_ratio[5], label=r"$h = 25000\,ft$", linestyle="dashed")
 plt.xlabel(r'$M$ - Mach number')                         # x-label to the axes.
 plt.ylabel(r"$F/F_{\textup{SL}} \,\, - \,\, [lb_{f}/lb_{f}]$ - Engine Thrust Ratio") # y-label to the axes.
 plt.title(r'Turboprop Engine thrust ratio')              # Title to the axes.
@@ -196,12 +226,12 @@ for m in range(len(h1)):
     Pow_ratio[m] = Thrust_ratio[m]*((V1[m])/(eta_p*550.0))
 # ===================================================================  
 fig3  = plt.figure()
-plt.plot(M, Pow_ratio[0], label=r"$h = 0\,ft$")
-plt.plot(M, Pow_ratio[1], label=r"$h = 5000\,ft$")
-plt.plot(M, Pow_ratio[2], label=r"$h = 10000\,ft$")
-plt.plot(M, Pow_ratio[3], label=r"$h = 15000\,ft$")
-plt.plot(M, Pow_ratio[4], label=r"$h = 20000\,ft$")
-plt.plot(M, Pow_ratio[5], label=r"$h = 25000\,ft$")
+plt.plot(M, Pow_ratio[0], label=r"$h = 0\,ft$",     linestyle="solid")
+plt.plot(M, Pow_ratio[1], label=r"$h = 5000\,ft$",  linestyle="dashed")
+plt.plot(M, Pow_ratio[2], label=r"$h = 10000\,ft$", linestyle="dotted")
+plt.plot(M, Pow_ratio[3], label=r"$h = 15000\,ft$", linestyle="dashdot")
+plt.plot(M, Pow_ratio[4], label=r"$h = 20000\,ft$", linestyle="solid")
+plt.plot(M, Pow_ratio[5], label=r"$h = 25000\,ft$", linestyle="dashed")
 plt.xlabel(r'$M$ - Mach number')                         # x-label to the axes.
 plt.ylabel(r"$P/P_{\textup{SL}}\,\, - \,\, [SHP/SHP]$ - Engine Power ratio")  # y-label to the axes.
 plt.title(r'Turboprop Engine power ratio')               # Title to the axes.
