@@ -364,7 +364,7 @@ class initial_sizing(object):
     A class to assess engine power and wing surface of an aircraft.
     """
     def __init__(self, AR, rho, Vmax, Vmin, maxWS, nMAX, CDmin, CDTO,\
-                 maxROC, g, mu, V_liftoff, CLTO, Sg, V_design, V_climb):
+                 maxROC, g, mu, V_liftoff, CLTO, Sg, V_design, V_climb, eta_p):
         """
         Initialization of INITIAL_SIZING class.
 
@@ -403,6 +403,8 @@ class initial_sizing(object):
             Design speed to calculate turn performances.
         V_climb : FLOAT
             Reference Horizontal speed for climb performances calculations.
+        eta_p  : FLOAT 
+            Propeller efficiency.
 
         Returns
         -------
@@ -425,10 +427,12 @@ class initial_sizing(object):
         # ====================================================================
         self.AR, self.rho, self.Vmax, self.Vmin, self.maxWS, self.nMAX,\
         self.CDmin, self.CDTO, self.maxROC, self.g, self.mu, self.V_liftoff,\
-        self.CLTO, self.Sg, self.V_design, self.V_climb = AR, rho, Vmax, Vmin,\
-        maxWS, nMAX, CDmin, CDTO, maxROC, g, mu, V_liftoff, CLTO, Sg, V_design,\
-        V_climb
-        # ====================================================================    
+        self.CLTO, self.Sg, self.V_design, self.V_climb, self.eta_p = AR, rho,\
+        Vmax, Vmin, maxWS, nMAX, CDmin, CDTO, maxROC, g, mu, V_liftoff, CLTO,\
+        Sg, V_design, V_climb, eta_p
+        # ====================================================================
+        # THRUST-TO-WEIGHT RATIO CALCULATIONS 
+        # ====================================================================
         self.V       = np.linspace(Vmin, Vmax, 1000)
         self.e       = self.efficiency_factor(AR)
         self.MaxROC  = 1.66667 # ROC in [ft/s]
@@ -450,6 +454,14 @@ class initial_sizing(object):
                                                   self.ws)
         self.TWSC    = self.service_ceiling_TW_ratio(self.MaxROC, CDmin,\
                                                      self.k, self.ws, rho)
+        # ====================================================================
+        # POWER-TO-WEIGHT RATIO CALCULATIONS 
+        # ====================================================================
+        self.PWturn  = (self.TWturn*V_design)/(eta_p*550.0)
+        self.PWclimb = (self.TWclimb*V_climb)/(eta_p*550.0)
+        self.PWTO    = (self.TWTO*(V_liftoff/(np.sqrt(2.0))))/(eta_p*550.0)
+        self.PWCS    = (self.TWclimb*Vmax)/(eta_p*550.0)
+        self.PWSC    = (self.TWclimb*V_climb)/(eta_p*550.0)
     # ========================================================================        
     def efficiency_factor(self, AR):
         """

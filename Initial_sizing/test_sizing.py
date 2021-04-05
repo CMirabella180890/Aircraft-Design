@@ -101,6 +101,7 @@ with open(JSONFileName1, "r") as f:
 aircraft_data = SimpleNamespace(**dict_aircraft_data) 
 # ===================================================
 AR        = aircraft_data.ASPECT_RATIO
+eta_prop  = aircraft_data.PROPELLER_EFFICIENCY
 CDmin     = aircraft_data.CD_MIN
 CDTO      = aircraft_data.CD_TAKEOFF
 CLTO      = aircraft_data.CL_TAKEOFF
@@ -121,11 +122,11 @@ nMAX      = aircraft_data.nMAX
 maxROC    = fpm2fps(aircraft_data.maxROC)             # foot per minute [ft/min] to [ft/s]
 # ============================================================================
 my_aircraft1 = initial_sizing(AR, rho1, Vmax, Vmin, maxWS, nMAX, CDmin, CDTO,\
-                              maxROC, g, mu, V_liftoff, CLTO, Sg, V_design, V_climb)
+                              maxROC, g, mu, V_liftoff, CLTO, Sg, V_design, V_climb, eta_prop)
 my_aircraft2 = initial_sizing(AR, rho2, Vmax, Vmin, maxWS, nMAX, CDmin, CDTO,\
-                              maxROC, g, mu, V_liftoff, CLTO, Sg, V_design, V_climb)
+                              maxROC, g, mu, V_liftoff, CLTO, Sg, V_design, V_climb, eta_prop)
 my_aircraft3 = initial_sizing(AR, rhoSC, Vmax, Vmin, maxWS, nMAX, CDmin, CDTO,\
-                              maxROC, g, mu, V_liftoff, CLTO, Sg, V_design, V_climb)    
+                              maxROC, g, mu, V_liftoff, CLTO, Sg, V_design, V_climb, eta_prop)    
 # ============================================================================ 
 # Create some mock data
 t = np.arange(0.01, 10.0, 0.01)
