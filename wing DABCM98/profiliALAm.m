@@ -226,8 +226,8 @@ save('polari profili\Naca618_250fl.dat', 'A4','-ascii');
 
 %% 2d output
 prof2d=struct
-prof2d.Cla18 = Clalpha18;
-prof2d.Cla15 = Clalpha15;
+prof2d.Cla18 = Clalpha18EU;
+prof2d.Cla15 = Clalpha15EU;
 prof2d.Xac15 = xac15;
 prof2d.Xac18 = xac18;
 prof2d.Clmax13 = cl2max;
