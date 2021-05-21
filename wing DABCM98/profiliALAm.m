@@ -142,6 +142,7 @@ lgd = legend({'$R_e=6.50\times10^{6}$','$R_e=1.10\times10^{7}$'},'Location','eas
 title(lgd,'NACA 63-615','Interpreter','latex','FontName','Palatino')
 xlabel('\textbf{$C_d$ drag count}','Interpreter','latex','FontName','Palatino');
 ylabel('\textbf{$C_l$}','Interpreter','latex','FontName','Palatino');
+grid on;
 %text(800,-0.5,'NACA 63615','Interpreter','latex','FontName','Palatino')
 saveas(gcf,'risultati immagini\polare_resistenza615.png')
 
@@ -153,6 +154,7 @@ lgd = legend({'$R_e=1.25\times10^{7}$','$R_e=1.90\times10^{7}$'},'Location','eas
 title(lgd,'NACA 63-618','Interpreter','latex','FontName','Palatino')
 xlabel('\textbf{$C_d$ drag count}','Interpreter','latex','FontName','Palatino');
 ylabel('\textbf{$C_l$}','Interpreter','latex','FontName','Palatino');
+grid on;
 %text(800,-0.5,'NACA 63618','Interpreter','latex','FontName','Palatino')
 saveas(gcf,'risultati immagini\polare_resistenza618.png')
 
@@ -166,6 +168,7 @@ ylabel('\textbf{$C_{m_{\frac{c}{4}}}$}','Interpreter','latex','FontName','Palati
 yline(0,'k');
 legend({'NACA 63615 $R_e=1.10\times10^{6}$'},'Location','northwest','Interpreter','latex','FontName','Palatino');
 yticks(-.35:0.05:0.05);
+grid on;
 pbaspect([3 1 1])
 saveas(gcf,'risultati immagini\cmc4_615_Re11e6.png')
 
@@ -179,6 +182,7 @@ yline(0,'k');
 legend({'NACA 63618 $R_e=1.90\times10^{7}$'},'Location','northwest','Interpreter','latex','FontName','Palatino');
 yticks(-.35:0.05:-0.05);
 pbaspect([3 1 1])
+grid on;
 saveas(gcf,'risultati immagini\cmc4_618_Re19e6.png')
 
 
@@ -195,6 +199,7 @@ yline(0,'k');
 legend({'NACA 63615 $R_e=1.10\times10^{6}$'},'Location','northwest','Interpreter','latex','FontName','Palatino');
 yticks(-.35:0.05:0.05);
 pbaspect([3 1 1])
+grid on;
 saveas(gcf,'risultati immagini\cmac_615_Re11e6.png')
 
 
@@ -211,6 +216,7 @@ yline(0,'k');
 legend({'NACA 63618 $R_e=1.90\times10^{7}$'},'Location','northwest','Interpreter','latex','FontName','Palatino');
 yticks(-.35:0.05:-0.05);
 pbaspect([3 1 1])
+grid on;
 saveas(gcf,'risultati immagini\cmac_618_Re19e6.png')
 
 %% 
