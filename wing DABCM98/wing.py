@@ -97,10 +97,10 @@ thickness = 18*k1+18*k2+15*k3
 
 # profilo medio aerodin
 
-Naca615_0FL = np.genfromtxt( 'D:\\AIRCRAFT DESIGN\\PROGETTO\\wing DABCM98\\polari profili\\Naca615_0fl.dat',dtype=float)
-Naca615_250FL = np.genfromtxt( 'D:\\AIRCRAFT DESIGN\\PROGETTO\\wing DABCM98\\polari profili\\Naca615_250fl.dat',dtype=float)
-Naca618_0FL = np.genfromtxt( 'D:\\AIRCRAFT DESIGN\\PROGETTO\\wing DABCM98\\polari profili\\Naca618_0fl.dat',dtype=float)
-Naca618_250FL = np.genfromtxt( 'D:\\AIRCRAFT DESIGN\\PROGETTO\\wing DABCM98\\polari profili\\Naca618_250fl.dat',dtype=float)
+Naca615_0FL = np.genfromtxt( 'wing DABCM98\\polari profili\\Naca615_0fl.dat',dtype=float)
+Naca615_250FL = np.genfromtxt( 'wing DABCM98\\polari profili\\Naca615_250fl.dat',dtype=float)
+Naca618_0FL = np.genfromtxt( 'wing DABCM98\\polari profili\\Naca618_0fl.dat',dtype=float)
+Naca618_250FL = np.genfromtxt( 'wing DABCM98\\polari profili\\Naca618_250fl.dat',dtype=float)
 #print(Naca615_0FL[:,0])
 
 
@@ -197,7 +197,7 @@ print('alfa^* 250FL {} Cl^* {}'.format(a_star_250FL,Cl_star_25OFL))
 
 
 # file output
-#with open('D:\\AIRCRAFT DESIGN\\PROGETTO\\wing DABCM98\\profili.json') as f:
+#with open('wing DABCM98\\profili.json') as f:
     # python object to be appended
     #y = '{"c_root":c_root}'
 # parsing JSON string:
@@ -210,7 +210,7 @@ print('alfa^* 250FL {} Cl^* {}'.format(a_star_250FL,Cl_star_25OFL))
     #print(json.dumps(z))
 
 #f.close()
-a_file = open("D:\\AIRCRAFT DESIGN\\PROGETTO\\wing DABCM98\\profili.json", "r")
+a_file = open("wing DABCM98\\profili.json", "r")
 json_object = json.load(a_file)
 a_file.close()
 
@@ -223,7 +223,7 @@ z={"corda_media_aerodin":str(c_mean),"Xle_tip":str(x_tip_le),"Cl_alpha_OFl":str(
 json_object.update(y)
 json_object.update(z)
 print(json_object)
-with open("D:\\AIRCRAFT DESIGN\\PROGETTO\\wing DABCM98\\output_2d.json", 'w') as outfile:
+with open("wing DABCM98\\output_2d.json", 'w') as outfile:
     json.dump(json_object, outfile)
 
 
@@ -235,14 +235,14 @@ rc('font',**{'family':'serif','serif':['Palatino']})
 rc('text', usetex=True)
 
 
-stat1 = PdfPages('D:\\AIRCRAFT DESIGN\\PROGETTO\\wing DABCM98\\risultati immagini\\Cl_mean_0FL.pdf')
-stat2 = PdfPages('D:\\AIRCRAFT DESIGN\\PROGETTO\\wing DABCM98\\risultati immagini\\Cl_mean_250FL.pdf')
-stat3 = PdfPages('D:\\AIRCRAFT DESIGN\\PROGETTO\\wing DABCM98\\risultati immagini\\Cl_Cd_mean_0FL.pdf')
-stat4 = PdfPages('D:\\AIRCRAFT DESIGN\\PROGETTO\\wing DABCM98\\risultati immagini\\Cl_Cd_mean_250FL.pdf')
-stat5 = PdfPages('D:\\AIRCRAFT DESIGN\\PROGETTO\\wing DABCM98\\risultati immagini\\Cm_c4_mean_0FL.pdf')
-stat6 = PdfPages('D:\\AIRCRAFT DESIGN\\PROGETTO\\wing DABCM98\\risultati immagini\\Cm_c4_mean_250FL.pdf')
-Wing = PdfPages('D:\\AIRCRAFT DESIGN\\PROGETTO\\wing DABCM98\\risultati immagini\\wing_planform.pdf')
-Wing_eq = PdfPages('D:\\AIRCRAFT DESIGN\\PROGETTO\\wing DABCM98\\risultati immagini\\wing_eq.pdf')
+stat1 = PdfPages('wing DABCM98\\risultati immagini\\Cl_mean_0FL.pdf')
+stat2 = PdfPages('wing DABCM98\\risultati immagini\\Cl_mean_250FL.pdf')
+stat3 = PdfPages('wing DABCM98\\risultati immagini\\Cl_Cd_mean_0FL.pdf')
+stat4 = PdfPages('wing DABCM98\\risultati immagini\\Cl_Cd_mean_250FL.pdf')
+stat5 = PdfPages('wing DABCM98\\risultati immagini\\Cm_c4_mean_0FL.pdf')
+stat6 = PdfPages('wing DABCM98\\risultati immagini\\Cm_c4_mean_250FL.pdf')
+Wing = PdfPages('wing DABCM98\\risultati immagini\\wing_planform.pdf')
+Wing_eq = PdfPages('wing DABCM98\\risultati immagini\\wing_eq.pdf')
 
 # cl mean airfoil 0 ft
 figCl0 = plt.figure()
