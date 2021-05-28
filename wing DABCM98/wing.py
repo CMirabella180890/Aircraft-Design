@@ -1,6 +1,7 @@
 import math
 from sympy import *
 from scipy.interpolate import interp1d
+from scipy.io import savemat
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import rc
@@ -10,7 +11,7 @@ import json
 
 # WING PLANFORM
 # INPUT
-S = 895.             #ft^2
+S = 979.             #ft^2
 AR = 12.5
 #S1_ratio = 0.38
 #S2_ratio = 1-S1_ratio
@@ -197,7 +198,7 @@ print('alfa^* 250FL {} Cl^* {}'.format(a_star_250FL,Cl_star_25OFL))
 
 
 # file output
-#with open('wing DABCM98\\profili.json') as f:
+#with open('D:\\AIRCRAFT DESIGN\\PROGETTO\\wing DABCM98\\profili.json') as f:
     # python object to be appended
     #y = '{"c_root":c_root}'
 # parsing JSON string:
@@ -216,10 +217,18 @@ a_file.close()
 
 c_root_eq = str(c_root_eq)
 
-y = {"spessore medio":str(thickness),"c_root":c_root,"c_tip":c_tip,"c_root_ala_eq":c_root_eq,"Sweept_ala_eq":sweep_eq,"Sweept_ala_eq_c4":sweep_eq_c4}
+#salvo alcune variabili in , mat
+b_wing = float(b_wing)
+c_mean = float(c_mean)
+car_Ala = {'S_wing':S,'b':b_wing,'MAC':c_mean}
+savemat('wing DABCM98\\caratteristiche_ala.mat',car_Ala)
+
+
+# creazione di un file .json
+y = {"spessore medio":str(thickness),"c_root [ft]":c_root,"c_tip [ft]":c_tip,"c_root_ala_eq [ft]":c_root_eq,"Sweept_le tapered [rad]":sweep_le2,"Sweept_ala_eq":sweep_eq,"Sweept_ala_eq_c4":sweep_eq_c4}
 z={"corda_media_aerodin":str(c_mean),"Xle_tip":str(x_tip_le),"Cl_alpha_OFl":str(Clalpha_mean_0FL),\
-     "Cl_alpha_250FL":str(Clalpha_mean_250FL),"alpha_0lift_0FL":str(alfa_0l_0FL),"alpha_0lift_250FL":str(alfa_0l_250FL),"alfa star 0FL":str(a_star_0FL),\
-   "alfa star 250FL":str(a_star_250FL),"Cl star 0FL":str(Cl_star_OFL),"Cl star 250FL":str(Cl_star_25OFL)}
+     "Cl_alpha_250FL":str(Clalpha_mean_250FL),"alpha_0lift_0FL[deg]":str(alfa_0l_0FL),"alpha_0lift_250FL[deg]":str(alfa_0l_250FL),"alfa star 0FL[deg]":str(a_star_0FL),\
+   "alfa star 250FL[deg]":str(a_star_250FL),"Cl star 0FL":str(Cl_star_OFL),"Cl star 250FL":str(Cl_star_25OFL)}
 json_object.update(y)
 json_object.update(z)
 print(json_object)
