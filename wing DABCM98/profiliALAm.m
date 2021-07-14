@@ -218,6 +218,72 @@ yticks(-.35:0.05:-0.05);
 pbaspect([3 1 1])
 grid on;
 saveas(gcf,'risultati immagini\cmac_618_Re19e6.png')
+%% cm in v_stall 
+
+
+
+figure 
+plot(Cl1,Cm1,'k'); 
+axis([-1 2.4 -0.35 0.05]);
+xlabel('\textbf{$C_l$}','Interpreter','latex','FontName','Palatino');
+ylabel('\textbf{$C_{m_{\frac{c}{4}}}$}','Interpreter','latex','FontName','Palatino');xline(0,'k');
+yline(0,'k');
+legend({'NACA 63615 $R_e=6.50\times10^{6}$'},'Location','northwest','Interpreter','latex','FontName','Palatino');
+yticks(-.35:0.05:0.05);
+grid on;
+pbaspect([3 1 1])
+saveas(gcf,'risultati immagini\cmc4_615_Re6p5e6.png')
+
+
+figure 
+plot(Cl3,Cm3,'k'); 
+axis([-1 2.4 -0.35 0.05]);
+xlabel('\textbf{$C_l$}','Interpreter','latex','FontName','Palatino');
+ylabel('\textbf{$C_{m_{\frac{c}{4}}}$}','Interpreter','latex','FontName','Palatino');xline(0,'k');
+yline(0,'k');
+legend({'NACA 63618 $R_e=1.25\times10^{7}$'},'Location','northwest','Interpreter','latex','FontName','Palatino');
+yticks(-.35:0.05:-0.05);
+pbaspect([3 1 1])
+grid on;
+saveas(gcf,'risultati immagini\cmc4_618_Re12p5e6.png')
+
+
+%Coefficiente di momento rispetto al centro aerodinamico
+for i=1:length(Cl1)
+Cmac1(i)= Cm1(i)+Cl1(i)*(xac15-.25);
+end
+figure 
+plot(Cl1,Cmac1,'k'); 
+axis([-1 2.4 -0.35 0.05]);
+xlabel('\textbf{$C_l$}','Interpreter','latex','FontName','Palatino');
+ylabel('\textbf{$C_{m,ac}$}','Interpreter','latex','FontName','Palatino');xline(0,'k');
+yline(0,'k');
+legend({'NACA 63615 $R_e=6p5\times10^{6}$'},'Location','northwest','Interpreter','latex','FontName','Palatino');
+yticks(-.35:0.05:0.05);
+pbaspect([3 1 1])
+grid on;
+saveas(gcf,'risultati immagini\cmac_615_Re6p5e6.png')
+
+
+
+for i=1:length(Cl3)
+Cmac3(i)= Cm3(i)+Cl3(i)*(xac18-.25);
+end
+figure 
+plot(Cl3,Cmac3,'k'); 
+axis([-1 2.4 -0.35 0.05]);
+xlabel('\textbf{$C_l$}','Interpreter','latex','FontName','Palatino');
+ylabel('\textbf{$C_{m,ac}$}','Interpreter','latex','FontName','Palatino');xline(0,'k');
+yline(0,'k');
+legend({'NACA 63618 $R_e=1.25\times10^{7}$'},'Location','northwest','Interpreter','latex','FontName','Palatino');
+yticks(-.35:0.05:-0.05);
+pbaspect([3 1 1])
+grid on;
+saveas(gcf,'risultati immagini\cmac_618_Re12p5e6.png')
+
+
+
+
 
 %% 
 A1=NACA63615Re6p5e6(:,1:4);

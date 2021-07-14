@@ -98,7 +98,7 @@ df = cabin_width;
 
 
 % rapporto finezza nose da 1.2 a 2.5
-ln_df = 1.3;   
+ln_df = 1.2;   
 fusolage.ln_df = ln_df;
 
 ln = ln_df * df;
@@ -132,15 +132,14 @@ teta_f = 16;    %deg
 fusolage.teta_f = teta_f;
 
 %Windshield angle
-psi = 42;       %deg
+psi = 45;       %deg
 fusolage.psi = psi;
 
 
 %% fusdes method
 %dalla geometria definita
-% da aerei simili l'ala sarà posizionata circa al 0.41 di lf
-% per cui xref=0.42 --->interpolazione lineare
-
+% da aerei simili l'ala sarà posizionata circa al 0.43 di lf
+% per cui xref=0.5 --->posizione ripetto cg
 S_front = pi*df^2/4;        %m^2
 
 S_wet_nose = pi*df*0.75*ln; %m^2
@@ -176,9 +175,9 @@ CM0_fus__ = CM0fr + D_CM0nose + D_CM0tail;
 CM0_fus = CM0_fus__*S_front/S_wing*df/MAC
 
 
-CM_a_fr = 0.21 - (0.21-188)*7/15; % xref =0.5*lf
-CM_a_nose = -0.0027;
-CM_a_tail = -0.0018;
+CM_a_fr = 0.22 - (0.22-0.195)*7/15; % xref =0.5*lf
+CM_a_nose = -0.0035;
+CM_a_tail = -0.002;
 CM_a_fus__ =  CM_a_fr + CM_a_nose + CM_a_tail;
 
 CM_a_fus = CM_a_fus__*S_front/S_wing*df/MAC
@@ -195,7 +194,7 @@ CN_b_fr = -0.212 - (-0.212 + 0.190)*7/15; % xref =0.42*lf
 CN_b_nose = +0.0023 - (0.0023-0.0032)*7/15;
 CN_b_tail = 0-(0.-0.0008)*7/15;
 CN_b_fus__ =  CN_b_fr + CN_b_nose + CN_b_tail;
-CN_b_fus_isolated = CN_b_fus__*S_front/S_wing*df/b
+CN_b_fus_isolated = CN_b_fus__*S_front/S_wing*df/b;
 
 
 
